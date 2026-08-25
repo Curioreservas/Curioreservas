@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CurioReservas | Reservas online para tu negocio</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      padding: 22px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #8b5cf6;
+    }
+
+    .by {
+      font-size: 11px;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    nav a {
+      color: #ddd;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .nav-button {
+      background: #7c3aed;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 9px;
+      font-weight: bold;
+    }
+
+    .hero {
+      min-height: 82vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 7%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: #7c3aed;
+      opacity: 0.15;
+      filter: blur(120px);
+      border-radius: 50%;
+      right: -100px;
+      top: 100px;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tag {
+      display: inline-block;
+      color: #a855f7;
+      border: 1px solid #5b21b6;
+      background: rgba(124, 58, 237, 0.1);
+      padding: 8px 14px;
+      border-radius: 50px;
+      font-size: 12px;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 0.98;
+      letter-spacing: -4px;
+      max-width: 900px;
+      margin-bottom: 28px;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, #ffffff, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .description {
+      color: #a3a3a3;
+      font-size: 19px;
+      line-height: 1.6;
+      max-width: 650px;
+      margin-bottom: 38px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: white;
+      padding: 16px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 10px 40px rgba(124, 58, 237, 0.25);
+    }
+
+    .secondary {
+      border: 1px solid #444;
+      color: white;
+      padding: 16px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .trust {
+      margin-top: 30px;
+      color: #777;
+      font-size: 13px;
+    }
+
+    .section {
+      padding: 90px 7%;
+      border-top: 1px solid #1c1c1c;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 42px;
+      margin-bottom: 15px;
+    }
+
+    .section-title span {
+      color: #a855f7;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 50px;
+    }
+
+    .features {
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: #0d0d0d;
+      border: 1px solid #242424;
+      padding: 30px;
+      border-radius: 18px;
+    }
+
+    .icon {
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(124, 58, 237, 0.15);
+      border-radius: 12px;
+      color: #a855f7;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #888;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    footer {
+      padding: 35px 7%;
+      border-top: 1px solid #1c1c1c;
+      color: #666;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        padding: 18px 5%;
+      }
+
+      nav a:not(.nav-button) {
+        display: none;
+      }
+
+      .hero {
+        padding: 70px 5%;
+        min-height: 75vh;
+      }
+
+      h1 {
+        font-size: 52px;
+        letter-spacing: -2px;
+      }
+
+      .description {
+        font-size: 16px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 70px 5%;
+      }
+
+      .section-title {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div>
+      <div class="logo">CURIO<span>RESERVAS</span></div>
+      <div class="by">by Curiomarketing</div>
+    </div>
+
+    <nav>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#precios">Precios</a>
+      <a href="#demo">Demo</a>
+      <a href="#registro" class="nav-button">Crear mi negocio</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <div class="glow"></div>
+
+      <div class="hero-content">
+
+        <div class="tag">
+          ✦ RESERVAS ONLINE PARA NEGOCIOS
+        </div>
+
+        <h1>
+          Tus clientes reservan.
+          <span>Tú haces crecer tu negocio.</span>
+        </h1>
+
+        <p class="description">
+          El sistema de reservas online para negocios que quieren
+          recibir más reservas y perder menos tiempo gestionando
+          llamadas y mensajes.
+        </p>
+
+        <div class="buttons">
+          <a href="#registro" class="primary">
+            CREAR MI NEGOCIO →
+          </a>
+
+          <a href="#demo" class="secondary">
+            VER DEMO
+          </a>
+        </div>
+
+        <div class="trust">
+          ✓ Fácil de usar &nbsp;&nbsp; ✓ Reservas 24/7 &nbsp;&nbsp; ✓ Sin complicaciones
+        </div>
+
+      </div>
+    </section>
+
+
+    <section class="section" id="como-funciona">
+
+      <h2 class="section-title">
+        Todo lo que necesitas para
+        <span>gestionar tus reservas.</span>
+      </h2>
+
+      <p class="section-subtitle">
+        Simple para ti. Fácil para tus clientes.
+      </p>
+
+      <div class="features">
+
+        <div class="card">
+          <div class="icon">📅</div>
+          <h3>Reservas online</h3>
+          <p>
+            Tus clientes pueden reservar cualquier día y a cualquier hora,
+            sin necesidad de llamarte.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="icon">⏰</div>
+          <h3>Calendario inteligente</h3>
+          <p>
+            Organiza tus horarios y consulta todas tus reservas desde
+            un único lugar.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="icon">👥</div>
+          <h3>Gestión de clientes</h3>
+          <p>
+            Ten toda la información de tus clientes organizada y accesible.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="section" id="precios">
+
+      <h2 class="section-title">
+        Empieza <span>gratis.</span>
+      </h2>
+
+      <p class="section-subtitle">
+        Prueba CurioReservas sin compromiso.
+      </p>
+
+      <div class="features">
+
+        <div class="card">
+          <div class="icon">🚀</div>
+          <h3>START</h3>
+          <h2>9,99 €<small>/mes</small></h2>
+          <p>
+            Reservas online, calendario, servicios y horarios.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h3>PRO</h3>
+          <h2>19,99 €<small>/mes</small></h2>
+          <p>
+            Funciones avanzadas para negocios que quieren crecer.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="icon">💎</div>
+          <h3>BUSINESS</h3>
+          <h2>29,99 €<small>/mes</small></h2>
+          <p>
+            Gestión avanzada para equipos y negocios con mayor volumen.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+    © 2026 CurioReservas · by Curiomarketing
+  </footer>
+
+</body>
+</html>
