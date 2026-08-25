@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Iniciar sesión | CurioReservas</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 18px;
+    }
+
+    .glow {
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      background: #7c3aed;
+      opacity: 0.12;
+      filter: blur(120px);
+      border-radius: 50%;
+      right: -120px;
+      top: -80px;
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #8b5cf6;
+    }
+
+    .by {
+      color: #777;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .card {
+      background: #0d0d0d;
+      border: 1px solid #252525;
+      border-radius: 22px;
+      padding: 32px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    .tag {
+      display: inline-block;
+      color: #c084fc;
+      border: 1px solid #5b21b6;
+      background: rgba(124, 58, 237, 0.1);
+      padding: 7px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 32px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      color: #ddd;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      background: #080808;
+      border: 1px solid #303030;
+      color: #fff;
+      border-radius: 10px;
+      padding: 14px;
+      outline: none;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .button {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: 8px;
+    }
+
+    .button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      border-radius: 10px;
+      padding: 13px;
+      margin-top: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(220, 38, 38, 0.1);
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(22, 163, 74, 0.1);
+      border: 1px solid #166534;
+      color: #86efac;
+    }
+
+    .register {
+      text-align: center;
+      margin-top: 22px;
+      color: #777;
+      font-size: 13px;
+    }
+
+    .register a,
+    .back {
+      color: #a855f7;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 25px 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="glow"></div>
+
+  <div class="container">
+
+    <div class="brand">
+      <div class="logo">CURIO<span>RESERVAS</span></div>
+      <div class="by">by Curiomarketing</div>
+    </div>
+
+    <div class="card">
+
+      <div class="tag">✦ BIENVENIDO DE NUEVO</div>
+
+      <h1>Iniciar sesión</h1>
+
+      <p class="subtitle">
+        Accede a tu cuenta y gestiona tu negocio y tus reservas.
+      </p>
+
+      <form id="loginForm">
+
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="tu@email.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Tu contraseña"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button class="button" id="loginButton" type="submit">
+          INICIAR SESIÓN →
+        </button>
+
+        <div id="message" class="message"></div>
+
+      </form>
+
+      <div class="register">
+        ¿Todavía no tienes una cuenta?
+        <a href="registro.html">Crear mi negocio</a>
+      </div>
+
+      <a href="index.html" class="back">
+        ← Volver a CurioReservas
+      </a>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://jstcvnprvpcizjqdpzes.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzdGN2bnBydnBjaXpqcWRwemVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTg3NDEsImV4cCI6MjEwMzIzNDc0MX0.rjP9P2jWKafkBCPzLNd6Bmzr7UAB2fq0Uk3L1xHxByU";
+
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    form.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      message.className = "message";
+      message.textContent = "";
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      button.disabled = true;
+      button.textContent = "INICIANDO SESIÓN...";
+
+      try {
+
+        const response = await fetch(
+          SUPABASE_URL + "/auth/v1/token?grant_type=password",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_ANON_KEY
+            },
+
+            body: JSON.stringify({
+              email: email,
+              password: password
+            })
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.error_description ||
+            data.msg ||
+            data.message ||
+            "No se pudo iniciar sesión."
+          );
+        }
+
+        if (!data.access_token || !data.user) {
+          throw new Error(
+            "Supabase no devolvió una sesión válida."
+          );
+        }
+
+        sessionStorage.setItem(
+          "curioreservas_access_token",
+          data.access_token
+        );
+
+        sessionStorage.setItem(
+          "curioreservas_refresh_token",
+          data.refresh_token || ""
+        );
+
+        sessionStorage.setItem(
+          "curioreservas_user",
+          JSON.stringify(data.user)
+        );
+
+        showMessage(
+          "🎉 ¡Sesión iniciada correctamente!",
+          "success"
+        );
+
+        button.textContent = "¡SESION INICIADA! ✓";
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          error.message ||
+          "Ha ocurrido un error. Inténtalo de nuevo.",
+          "error"
+        );
+
+        button.disabled = false;
+        button.textContent = "INICIAR SESIÓN →";
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
