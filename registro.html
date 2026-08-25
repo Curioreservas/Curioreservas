@@ -369,21 +369,20 @@
             "No se pudo crear la cuenta."
           );
         }
+        
+        localStorage.setItem(
+  "curioreservas_pending_business",
+  JSON.stringify({
+    ownerName: ownerName,
+    businessName: businessName,
+    email: email,
+    phone: phone,
+    description: description
+  })
+);
 
         const user = signUpData.user;
-
-        if (!user) {
-  localStorage.setItem(
-    "curioreservas_pending_business",
-    JSON.stringify({
-      ownerName: ownerName,
-      businessName: businessName,
-      email: email,
-      phone: phone,
-      description: description
-    })
-  );
-
+        
   showMessage(
     "🎉 ¡Cuenta creada! Revisa tu correo para confirmar tu cuenta. Después podrás iniciar sesión y terminar de configurar tu negocio.",
     "success"
