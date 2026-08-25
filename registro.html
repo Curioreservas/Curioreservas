@@ -370,6 +370,14 @@
           );
         }
  const createdUser = signUpData.user;
+        
+       localStorage.setItem("curioreservas_pending_business", JSON.stringify({
+  ownerName: ownerName,
+  businessName: businessName,
+  email: email,
+  phone: phone,
+  description: description
+})); 
 
 if (createdUser) {
     const businessResponse = await fetch(
