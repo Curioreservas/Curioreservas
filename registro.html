@@ -258,7 +258,7 @@
 
         <div class="field">
           <label for="ownerName">Tu nombre</label>
-          <input id="ownerName" type="text" placeholder="Ej. María García" required>
+          <input id="ownerName" type="text" placeholder="Ej. Elena García" required>
         </div>
 
         <div class="field">
@@ -373,10 +373,27 @@
         const user = signUpData.user;
 
         if (!user) {
-          throw new Error(
-            "La cuenta fue creada, pero Supabase no devolvió el usuario."
-          );
-        }
+  localStorage.setItem(
+    "curioreservas_pending_business",
+    JSON.stringify({
+      ownerName: ownerName,
+      businessName: businessName,
+      email: email,
+      phone: phone,
+      description: description
+    })
+  );
+
+  showMessage(
+    "🎉 ¡Cuenta creada! Revisa tu correo para confirmar tu cuenta. Después podrás iniciar sesión y terminar de configurar tu negocio.",
+    "success"
+  );
+
+  button.disabled = false;
+  button.textContent = "CUENTA CREADA ✓";
+
+  return;
+}
 
         const today = new Date();
 
