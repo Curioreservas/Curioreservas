@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mi negocio | CurioReservas</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #fff;
+      min-height: 100vh;
+      padding: 30px 18px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 27px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .logo span {
+      color: #8b5cf6;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 35px;
+    }
+
+    .card {
+      background: #0d0d0d;
+      border: 1px solid #252525;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      display: inline-block;
+      color: #c084fc;
+      border: 1px solid #5b21b6;
+      background: rgba(124, 58, 237, 0.1);
+      padding: 7px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #888;
+      line-height: 1.6;
+    }
+
+    .status {
+      margin-top: 25px;
+      padding: 18px;
+      border-radius: 12px;
+      background: rgba(124, 58, 237, 0.08);
+      border: 1px solid #3b1d70;
+    }
+
+    .status strong {
+      color: #c084fc;
+    }
+
+    .button {
+      margin-top: 25px;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(22, 163, 74, 0.1);
+      border: 1px solid #166534;
+      color: #86efac;
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(220, 38, 38, 0.1);
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+    }
+
+    .logout {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      color: #888;
+      text-decoration: none;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">
+      CURIO<span>RESERVAS</span>
+    </div>
+
+    <div class="subtitle">
+      Panel de tu negocio · by Curiomarketing
+    </div>
+
+    <div class="card">
+
+      <div class="tag">✦ PANEL DE NEGOCIO</div>
+
+      <h1 id="welcome">Cargando...</h1>
+
+      <p>
+        Estamos preparando tu espacio de CurioReservas.
+      </p>
+
+      <div class="status">
+        <strong>🎁 Demo gratuita de 30 días</strong>
+        <p>
+          Tu negocio tendrá acceso de prueba durante 30 días.
+        </p>
+      </div>
+
+      <button id="createButton" class="button">
+        CREAR MI NEGOCIO →
+      </button>
+
+      <div id="message" class="message"></div>
+
+      <a href="index.html" class="logout">
+        ← Volver a CurioReservas
+      </a>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://jstcvnprvpcizjqdpzes.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzdGN2bnBydnBjaXpqcWRwemVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTg3NDEsImV4cCI6MjEwMzIzNDc0MX0.rjP9P2jWKafkBCPzLNd6Bmzr7UAB2fq0Uk3L1xHxByU";
+
+    const welcome = document.getElementById("welcome");
+    const button = document.getElementById("createButton");
+    const message = document.getElementById("message");
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    async function loadSession() {
+
+      const accessToken =
+        sessionStorage.getItem(
+          "curioreservas_access_token"
+        );
+
+      const savedUser =
+        sessionStorage.getItem(
+          "curioreservas_user"
+        );
+
+      if (!accessToken || !savedUser) {
+
+        welcome.textContent = "Sesión no encontrada";
+
+        showMessage(
+          "Tu sesión no está disponible. Inicia sesión nuevamente.",
+          "error"
+        );
+
+        button.disabled = true;
+
+        return;
+      }
+
+      const user = JSON.parse(savedUser);
+
+      welcome.textContent =
+        "¡Bienvenida! 👋";
+
+      button.disabled = false;
+
+      button.onclick = function() {
+        createBusiness(user, accessToken);
+      };
+    }
+
+
+    async function createBusiness(user, accessToken) {
+
+      button.disabled = true;
+
+      button.textContent =
+        "CREANDO TU NEGOCIO...";
+
+      try {
+
+        /*
+          Recuperamos los datos que guardamos
+          durante el registro.
+        */
+
+        const pending =
+          localStorage.getItem(
+            "curioreservas_pending_business"
+          );
+
+        if (!pending) {
+
+          throw new Error(
+            "No encontramos los datos del negocio pendientes."
+          );
+        }
+
+        const business =
+          JSON.parse(pending);
+
+
+        /*
+          Fechas de la demo.
+        */
+
+        const startDate =
+          new Date();
+
+        const endDate =
+          new Date(startDate);
+
+        endDate.setDate(
+          endDate.getDate() + 30
+        );
+
+
+        /*
+          Creamos el negocio en Supabase.
+        */
+
+        const response =
+          await fetch(
+            SUPABASE_URL +
+            "/rest/v1/businesses",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization":
+                  "Bearer " + accessToken,
+                "Prefer":
+                  "return=representation"
+              },
+
+              body: JSON.stringify({
+
+                owner_id: user.id,
+
+                name:
+                  business.businessName,
+
+                email:
+                  business.email,
+
+                phone:
+                  business.phone,
+
+                description:
+                  business.description,
+
+                trial_start:
+                  startDate.toISOString(),
+
+                trial_end:
+                  endDate.toISOString(),
+
+                plan:
+                  "start",
+
+                status:
+                  "trial"
+
+              })
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.message ||
+            data.details ||
+            "No se pudo crear el negocio."
+          );
+        }
+
+
+        /*
+          Eliminamos los datos pendientes
+          porque ya fueron utilizados.
+        */
+
+        localStorage.removeItem(
+          "curioreservas_pending_business"
+        );
+
+
+        showMessage(
+          "🎉 ¡Tu negocio se ha creado correctamente! Tienes 30 días de demo gratuita.",
+          "success"
+        );
+
+        button.textContent =
+          "NEGOCIO CREADO ✓";
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          error.message ||
+          "Ha ocurrido un error.",
+          "error"
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+          "CREAR MI NEGOCIO →";
+      }
+
+    }
+
+
+    loadSession();
+
+  </script>
+
+</body>
+</html>
