@@ -369,7 +369,37 @@
             "No se pudo crear la cuenta."
           );
         }
-        
+ const createdUser = signUpData.user;
+
+if (createdUser) {
+    const businessResponse = await fetch(
+        SUPABASE_URL + "/rest/v1/businesses",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+                "Prefer": "return=representation"
+            },
+            body: JSON.stringify({
+                owner_id: createdUser.id,
+                owner_name: ownerName,
+                business_name: businessName,
+                email: email,
+                phone: phone,
+                description: description
+            })
+        }
+    );
+
+    if (!businessResponse.ok) {
+        const businessError = await businessResponse.json();
+        throw new Error(
+            businessError.message || "No se pudo crear el negocio."
+        );
+    }
+}       
         localStorage.setItem(
   "curioreservas_pending_business",
   JSON.stringify({
