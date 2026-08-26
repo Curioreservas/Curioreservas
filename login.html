@@ -351,11 +351,15 @@
         );
 
         showMessage(
-          "🎉 ¡Sesión iniciada correctamente!",
-          "success"
-        );
+    "🎉 ¡Sesión iniciada correctamente! Te estamos llevando a tu panel...",
+    "success"
+);
 
-        button.textContent = "¡SESION INICIADA! ✓";
+button.textContent = "¡SESION INICIADA! ✓";
+
+setTimeout(() => {
+    window.location.href = "panel.html";
+}, 1500);
 
       } catch (error) {
 
