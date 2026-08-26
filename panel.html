@@ -299,27 +299,34 @@
               body: JSON.stringify({
 
                 owner_id: user.id,
+owner_name: user.email,
 
-                Name:
-                  business.businessName,
+Name:
+    business.businessName,
 
-                email:
-                  business.email,
+email:
+    business.email,
 
-                Phone:
-                  business.phone,
+Phone:
+    business.phone,
 
-                Description:
-                  business.description,
+Description:
+    business.description,
 
-                Trial_start:
-                  startDate.toISOString(),
+monthly_price:
+    9.99,
 
-                Trial_end:
-                  endDate.toISOString(),
+Subscription_status:
+    "trial",
 
-                Subscription_status:
-                  "trial"
+trial_enabled:
+    true,
+
+Trial_start:
+    startDate.toISOString(),
+
+Trial_end:
+    endDate.toISOString()
 
               })
             }
