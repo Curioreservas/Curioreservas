@@ -393,13 +393,15 @@
            ================================ */
 
         showMessage(
-          "🎉 ¡Cuenta creada correctamente! Revisa tu correo para confirmar la cuenta.",
-          "success"
-        );
+  "🎉 ¡Cuenta creada correctamente! Te estamos llevando a tu panel...",
+  "success"
+);
 
-        button.textContent =
-          "CUENTA CREADA ✓";
+button.textContent = "CUENTA CREADA ✓";
 
+setTimeout(() => {
+  window.location.href = "panel.html";
+}, 1500);
 
       } catch (error) {
 
