@@ -345,11 +345,12 @@
             },
 
             body: JSON.stringify({
-              email: email,
-              password: password
-            })
-          }
-        );
+  email: email,
+  password: password,
+  options: {
+    emailRedirectTo: "https://curioreservas.viannytp.workers.dev/confirmado.html"
+  }
+})
 
 
         const data = await response.json();
