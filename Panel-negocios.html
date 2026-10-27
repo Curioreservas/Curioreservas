@@ -1,0 +1,1345 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08080b">
+  <title>Panel de negocio | CurioReservas</title>
+
+  <style>
+    :root {
+      --bg: #08080b;
+      --surface: #111116;
+      --surface2: #191920;
+      --border: #292832;
+      --purple: #8b5cf6;
+      --purple2: #7c3aed;
+      --white: #ffffff;
+      --muted: #a3a3b5;
+      --green: #34d399;
+      --red: #fb7185;
+      --radius: 17px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   sans-serif;
+      font-size: 14px;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: #0d0d12;
+      border-right: 1px solid var(--border);
+      padding: 25px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .brand {
+      padding: 0 10px;
+      font-size: 21px;
+      font-weight: 850;
+      letter-spacing: -1px;
+    }
+
+    .brand span { color: var(--purple); }
+
+    .small-label {
+      padding: 0 11px;
+      margin-bottom: 9px;
+      color: #858598;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav button {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      padding: 12px 11px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      background: transparent;
+      color: #b5b5c5;
+      text-align: left;
+      transition: .2s;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: white;
+      background: #21172f;
+      border-color: #392652;
+    }
+
+    .nav button.active { color: #c7adff; }
+    .nav-icon { width: 20px; text-align: center; font-size: 17px; }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .sidebar-bottom p {
+      margin: 7px 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .main { min-width: 0; }
+
+    .topbar {
+      min-height: 76px;
+      padding: 17px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid var(--border);
+      background: #0b0b10;
+    }
+
+    .topbar h2 { margin: 0; font-size: 17px; }
+    .topbar p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+
+    .avatar {
+      width: 37px;
+      height: 37px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--purple), #4920a1);
+      font-weight: 800;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    h1 { margin: 0; font-size: clamp(24px, 3vw, 31px); letter-spacing: -.8px; }
+    h3 { margin: 0 0 7px; font-size: 16px; }
+    .subtitle { margin: 9px 0 0; color: var(--muted); line-height: 1.6; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      min-width: 0;
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .metric-icon {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: #26183a;
+      color: #c7adff;
+      font-size: 17px;
+    }
+
+    .metric-value { margin-top: 18px; font-size: 29px; font-weight: 800; }
+    .metric-note { margin-top: 6px; color: var(--muted); font-size: 11px; }
+
+    .section-card { margin-bottom: 20px; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-head p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface2);
+      color: white;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .btn:hover { border-color: var(--purple); }
+    .btn-primary {
+      background: var(--purple2);
+      border-color: var(--purple2);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--purple); }
+    .btn-small { min-height: 33px; padding: 7px 10px; font-size: 12px; }
+    .btn-danger { color: var(--red); }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .quick-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #15151c;
+      color: white;
+      text-align: left;
+    }
+
+    .quick-link:hover { border-color: var(--purple); }
+    .quick-link .metric-icon { flex-shrink: 0; }
+    .quick-link strong { display: block; margin-bottom: 5px; }
+    .quick-link small { color: var(--muted); line-height: 1.5; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+
+    label { color: #dedee9; font-size: 12px; font-weight: 650; }
+
+    input, textarea, select {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 13px;
+      border: 1px solid #33323f;
+      border-radius: 10px;
+      outline: none;
+      background: #0c0c11;
+      color: white;
+    }
+
+    input:focus, textarea:focus, select:focus { border-color: var(--purple); }
+    textarea { min-height: 100px; resize: vertical; }
+    input[type="file"] { padding: 10px; font-size: 12px; }
+    input[type="time"] { min-width: 0; }
+    input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--purple); }
+
+    .hint { color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .form-actions { display: flex; justify-content: flex-end; margin-top: 20px; gap: 10px; }
+
+    .identity-preview {
+      overflow: hidden;
+      margin-bottom: 22px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #111116;
+    }
+
+    .cover {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 145px;
+      padding: 20px;
+      background:
+        radial-gradient(ellipse at 75% 20%, #4c2580 0%, transparent 48%),
+        linear-gradient(120deg, #1c152b, #101016 60%, #26163a);
+      background-size: cover;
+      background-position: center;
+    }
+
+    .cover-placeholder { color: #c8b3ee; font-size: 12px; }
+    .identity-info { display: flex; align-items: center; gap: 15px; padding: 18px; }
+
+    .logo-preview {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+      margin-top: -35px;
+      border: 4px solid #111116;
+      border-radius: 19px;
+      background: #292039;
+      color: #d6c4ff;
+      font-size: 23px;
+      font-weight: 800;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .logo-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .identity-text { min-width: 0; }
+    .identity-text h3 { overflow-wrap: anywhere; margin-bottom: 5px; }
+    .identity-text p { margin: 0; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+
+    .days-list { display: grid; gap: 10px; }
+
+    .day-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) 65px minmax(100px, .7fr) minmax(100px, .7fr);
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #14141a;
+    }
+
+    .day-name { font-weight: 700; }
+    .day-row.closed .day-name { color: #858598; }
+    .day-row.closed .time-input { opacity: .35; pointer-events: none; }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 45px;
+      height: 25px;
+      cursor: pointer;
+    }
+
+    .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 99px;
+      background: #393944;
+      transition: .2s;
+    }
+
+    .switch-track::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: white;
+      transition: .2s;
+    }
+
+    .switch input:checked + .switch-track { background: var(--purple2); }
+    .switch input:checked + .switch-track::before { transform: translateX(20px); }
+    .switch input:focus-visible + .switch-track { outline: 2px solid white; outline-offset: 3px; }
+
+    .closed-label { color: #858598; font-size: 11px; }
+    .open-label { color: var(--green); font-size: 11px; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .service-card {
+      overflow: hidden;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #14141a;
+    }
+
+    .service-photo {
+      display: grid;
+      place-items: center;
+      height: 150px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #21152e, #101016);
+      color: #b8a1e8;
+      font-size: 12px;
+    }
+
+    .service-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .service-body { padding: 15px; }
+    .service-body p { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .service-bottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .price { color: #c4a8ff; font-size: 18px; font-weight: 800; }
+
+    .empty {
+      padding: 30px 18px;
+      border: 1px dashed #393542;
+      border-radius: 13px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .notice {
+      padding: 13px 15px;
+      border: 1px solid #49346a;
+      border-radius: 11px;
+      background: #1c1428;
+      color: #d9c9f7;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 9px;
+      border-radius: 8px;
+      background: #14291f;
+      color: #86efac;
+      font-size: 11px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 20;
+      max-width: calc(100% - 40px);
+      padding: 13px 17px;
+      border: 1px solid #51406c;
+      border-radius: 12px;
+      background: #20162e;
+      color: white;
+      box-shadow: 0 10px 35px #0008;
+      display: none;
+    }
+
+    .toast.show { display: block; }
+    .mobile-menu { display: none; }
+    .muted { color: var(--muted); }
+
+    @media (max-width: 1000px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .content { padding: 22px; }
+      .day-row { grid-template-columns: minmax(90px, 1fr) 55px minmax(90px, .8fr) minmax(90px, .8fr); gap: 8px; }
+    }
+
+    @media (max-width: 720px) {
+      .app { display: block; }
+      .sidebar {
+        display: none;
+        position: fixed;
+        z-index: 15;
+        inset: 0 auto 0 0;
+        width: min(290px, 85vw);
+        overflow-y: auto;
+        box-shadow: 20px 0 50px #0009;
+      }
+      .sidebar.open { display: flex; }
+      .topbar { padding: 14px 17px; }
+      .mobile-menu { display: inline-flex; }
+      .content { padding: 20px 15px 35px; }
+      .grid { gap: 10px; }
+      .card { padding: 15px; }
+      .metric-value { font-size: 25px; }
+      .quick-grid, .form-grid, .services-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .day-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+      }
+      .day-name { grid-column: 1; }
+      .day-toggle { grid-column: 2; grid-row: 1; justify-self: end; }
+      .time-input { grid-row: 2; }
+      .day-state { grid-column: 1 / -1; }
+      .identity-info { align-items: flex-start; }
+      .logo-preview { width: 62px; height: 62px; }
+      .topbar .user-label { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">CURIO<span>RESERVAS</span></div>
+
+    <div>
+      <div class="small-label">Menú principal</div>
+      <nav class="nav">
+        <button class="active" data-page="inicio"><span class="nav-icon">⌂</span> Inicio</button>
+        <button data-page="negocio"><span class="nav-icon">▣</span> Mi negocio</button>
+        <button data-page="reservas"><span class="nav-icon">▦</span> Mis reservas</button>
+        <button data-page="servicios"><span class="nav-icon">✦</span> Mis servicios</button>
+        <button data-page="horarios"><span class="nav-icon">◷</span> Horarios y disponibilidad</button>
+        <button data-page="pagina"><span class="nav-icon">↗</span> Mi página de reservas</button>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <strong>Tu negocio, más sencillo.</strong>
+      <p>Organiza tus servicios y prepara tu sistema de reservas desde un solo lugar.</p>
+      <span class="status">● Demo gratuita: 30 días</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn mobile-menu" id="menuButton" aria-label="Abrir menú">☰</button>
+        <div>
+          <h2 id="topTitle">Inicio</h2>
+          <p>Gestiona tu negocio con CurioReservas</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="user-label muted" id="userEmail">Mi negocio</span>
+        <div class="avatar" id="userAvatar">C</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- INICIO -->
+      <section class="page active" id="page-inicio">
+        <div class="heading">
+          <div>
+            <h1>¡Bienvenida a tu panel!</h1>
+            <p class="subtitle">Todo lo que necesitas para empezar a gestionar tus reservas.</p>
+          </div>
+          <button class="btn btn-primary" data-go="negocio">Configurar mi negocio →</button>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="metric-top"><span>Reservas</span><span class="metric-icon">▦</span></div>
+            <div class="metric-value" id="metricReservations">0</div>
+            <div class="metric-note">Reservas registradas</div>
+          </div>
+          <div class="card">
+            <div class="metric-top"><span>Clientes</span><span class="metric-icon">♙</span></div>
+            <div class="metric-value" id="metricClients">0</div>
+            <div class="metric-note">Clientes registrados</div>
+          </div>
+          <div class="card">
+            <div class="metric-top"><span>Servicios</span><span class="metric-icon">✦</span></div>
+            <div class="metric-value" id="metricServices">0</div>
+            <div class="metric-note">Servicios creados</div>
+          </div>
+          <div class="card">
+            <div class="metric-top"><span>Prueba gratuita</span><span class="metric-icon">◷</span></div>
+            <div class="metric-value" style="font-size:23px">30 días</div>
+            <div class="metric-note">Precio previsto después: 9,99 €/mes</div>
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="section-head">
+            <div>
+              <h3>Gestiona tu negocio</h3>
+              <p>Accede rápidamente a cada apartado.</p>
+            </div>
+          </div>
+          <div class="quick-grid">
+            <button class="quick-link" data-go="negocio">
+              <span class="metric-icon">▣</span>
+              <span><strong>Mi negocio</strong><small>Datos, logo y portada</small></span>
+            </button>
+            <button class="quick-link" data-go="reservas">
+              <span class="metric-icon">▦</span>
+              <span><strong>Mis reservas</strong><small>Consulta tus reservas</small></span>
+            </button>
+            <button class="quick-link" data-go="servicios">
+              <span class="metric-icon">✦</span>
+              <span><strong>Servicios y precios</strong><small>Crea tu catálogo</small></span>
+            </button>
+            <button class="quick-link" data-go="horarios">
+              <span class="metric-icon">◷</span>
+              <span><strong>Horarios y disponibilidad</strong><small>Elige tus días y horas</small></span>
+            </button>
+            <button class="quick-link" data-go="pagina">
+              <span class="metric-icon">↗</span>
+              <span><strong>Mi página de reservas</strong><small>Prepara tu página pública</small></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MI NEGOCIO -->
+      <section class="page" id="page-negocio">
+        <div class="heading">
+          <div>
+            <h1>Mi negocio</h1>
+            <p class="subtitle">Personaliza cómo se presenta tu negocio a tus clientes.</p>
+          </div>
+        </div>
+
+        <div class="notice">
+          Tu logo y tu portada son opcionales. Las imágenes que selecciones se mostrarán aquí como vista previa.
+          En esta versión inicial, las imágenes se conservan en este navegador; todavía hay que conectar el almacenamiento de Supabase para guardarlas en tu cuenta.
+        </div>
+
+        <div class="identity-preview">
+          <div class="cover" id="coverPreview">
+            <span class="cover-placeholder" id="coverPlaceholder">Portada de tu negocio · imagen opcional</span>
+          </div>
+          <div class="identity-info">
+            <div class="logo-preview" id="logoPreview">C</div>
+            <div class="identity-text">
+              <h3 id="previewName">Nombre de tu negocio</h3>
+              <p id="previewDescription">Aquí aparecerá una breve descripción de tu negocio.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="section-head">
+            <div>
+              <h3>Identidad visual</h3>
+              <p>Sube el logo y, si quieres, una portada.</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="logoFile">Logo del negocio</label>
+              <input id="logoFile" type="file" accept="image/*">
+              <span class="hint">Opcional. Se recomienda una imagen cuadrada.</span>
+            </div>
+            <div class="field">
+              <label for="coverFile">Portada del negocio</label>
+              <input id="coverFile" type="file" accept="image/*">
+              <span class="hint">Opcional. Se recomienda una imagen horizontal.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>Información del negocio</h3>
+              <p>Completa o modifica los datos de tu negocio.</p>
+            </div>
+          </div>
+          <form id="businessForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="businessName">Nombre del negocio *</label>
+                <input id="businessName" required placeholder="Nombre de tu negocio">
+              </div>
+              <div class="field">
+                <label for="businessPhone">Teléfono de contacto</label>
+                <input id="businessPhone" type="tel" placeholder="+34 600 000 000">
+              </div>
+              <div class="field full">
+                <label for="businessEmail">Correo electrónico</label>
+                <input id="businessEmail" type="email" placeholder="contacto@tunegocio.com">
+              </div>
+              <div class="field full">
+                <label for="businessDescription">Descripción</label>
+                <textarea id="businessDescription" placeholder="Cuéntales a tus clientes qué ofrece tu negocio..."></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">Guardar información</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- RESERVAS -->
+      <section class="page" id="page-reservas">
+        <div class="heading">
+          <div>
+            <h1>Mis reservas</h1>
+            <p class="subtitle">Consulta y organiza las citas de tus clientes.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty">
+            <div style="font-size:30px;margin-bottom:12px">▦</div>
+            <strong>Aún no hay reservas para mostrar</strong><br>
+            Cuando conectemos la página pública con el sistema de reservas, las reservas reales aparecerán aquí.
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICIOS -->
+      <section class="page" id="page-servicios">
+        <div class="heading">
+          <div>
+            <h1>Mis servicios</h1>
+            <p class="subtitle">Añade lo que ofreces, su precio y una foto opcional.</p>
+          </div>
+          <button class="btn btn-primary" id="newServiceButton">＋ Añadir servicio</button>
+        </div>
+
+        <div class="notice">
+          Puedes añadir una fotografía de cada servicio, pero no es obligatoria. En esta versión, los servicios se guardan en el navegador de este dispositivo. La conexión permanente con Supabase se configurará después.
+        </div>
+
+        <div class="card section-card" id="serviceFormCard" style="display:none">
+          <div class="section-head">
+            <div>
+              <h3 id="serviceFormTitle">Añadir servicio</h3>
+              <p>Los campos marcados son necesarios para crear el servicio.</p>
+            </div>
+          </div>
+          <form id="serviceForm">
+            <input type="hidden" id="serviceEditId">
+            <div class="form-grid">
+              <div class="field">
+                <label for="serviceName">Nombre del servicio *</label>
+                <input id="serviceName" required placeholder="Ej. Corte de pelo">
+              </div>
+              <div class="field">
+                <label for="servicePrice">Precio (€) *</label>
+                <input id="servicePrice" type="number" min="0" step="0.01" required placeholder="25,00">
+              </div>
+              <div class="field full">
+                <label for="serviceDescription">Descripción (opcional)</label>
+                <textarea id="serviceDescription" placeholder="Describe brevemente este servicio..."></textarea>
+              </div>
+              <div class="field full">
+                <label for="servicePhoto">Foto del servicio (opcional)</label>
+                <input id="servicePhoto" type="file" accept="image/*">
+                <span class="hint">Puedes seleccionar una foto desde tu móvil o desde el ordenador.</span>
+                <div id="servicePhotoHint" class="hint"></div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn" type="button" id="cancelService">Cancelar</button>
+              <button class="btn btn-primary" type="submit">Guardar servicio</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="servicesContainer" class="services-grid"></div>
+      </section>
+
+      <!-- HORARIOS -->
+      <section class="page" id="page-horarios">
+        <div class="heading">
+          <div>
+            <h1>Horarios y disponibilidad</h1>
+            <p class="subtitle">Activa los días en que trabajas y define tu horario.</p>
+          </div>
+        </div>
+
+        <div class="notice">
+          Activa el interruptor para abrir un día y desactívalo para marcarlo como cerrado.
+          Estos horarios se muestran en este panel; conectarlos con el sistema público de reservas será necesario para bloquear citas en días cerrados.
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>Horario semanal</h3>
+              <p>Elige los días y las horas de tu negocio.</p>
+            </div>
+            <span class="status">7 días configurables</span>
+          </div>
+          <form id="scheduleForm">
+            <div class="days-list" id="daysList"></div>
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">Guardar horarios</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- PAGINA PUBLICA -->
+      <section class="page" id="page-pagina">
+        <div class="heading">
+          <div>
+            <h1>Mi página de reservas</h1>
+            <p class="subtitle">Aquí estará la página que tus clientes utilizarán para reservar.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty">
+            <div style="font-size:30px;margin-bottom:12px">↗</div>
+            <strong>Tu página pública se conectará en la siguiente fase</strong><br>
+            Mostrará el logo, la portada, la información, los servicios y los horarios disponibles de tu negocio.
+          </div>
+        </div>
+      </section>
+
+      <p class="hint" style="text-align:center;margin-top:25px">
+        CurioReservas · Organiza tu negocio, simplifica tus reservas.
+      </p>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+
+  const pageTitles = {
+    inicio: "Inicio",
+    negocio: "Mi negocio",
+    reservas: "Mis reservas",
+    servicios: "Mis servicios",
+    horarios: "Horarios y disponibilidad",
+    pagina: "Mi página de reservas"
+  };
+
+  let business = {
+    name: "",
+    phone: "",
+    email: "",
+    description: "",
+    logo: "",
+    cover: ""
+  };
+
+  let services = [];
+  let schedules = {};
+  let pendingServicePhoto = "";
+  let toastTimeout;
+
+  const days = [
+    ["lunes", "Lunes"],
+    ["martes", "Martes"],
+    ["miercoles", "Miércoles"],
+    ["jueves", "Jueves"],
+    ["viernes", "Viernes"],
+    ["sabado", "Sábado"],
+    ["domingo", "Domingo"]
+  ];
+
+  function getUserKey() {
+    try {
+      const raw = localStorage.getItem("curioreservas_user");
+      if (raw) {
+        const user = JSON.parse(raw);
+        return user.id || user.email || "default";
+      }
+    } catch (_) {}
+    return "default";
+  }
+
+  const storagePrefix = "curioreservas_panel_" + getUserKey() + "_";
+
+  function readStore(key, fallback) {
+    try {
+      const value = localStorage.getItem(storagePrefix + key);
+      return value ? JSON.parse(value) : fallback;
+    } catch (_) {
+      return fallback;
+    }
+  }
+
+  function writeStore(key, value) {
+    try {
+      localStorage.setItem(storagePrefix + key, JSON.stringify(value));
+      return true;
+    } catch (error) {
+      showToast("No se pudo guardar. Puede que la imagen sea demasiado grande.");
+      return false;
+    }
+  }
+
+  function showToast(message) {
+    const toast = $("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove("show"), 3500);
+  }
+
+  function safeText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  function showPage(name) {
+    if (!pageTitles[name]) return;
+
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.toggle("active", page.id === "page-" + name);
+    });
+
+    document.querySelectorAll(".nav button[data-page]").forEach(button => {
+      button.classList.toggle("active", button.dataset.page === name);
+    });
+
+    $("topTitle").textContent = pageTitles[name];
+    $("sidebar").classList.remove("open");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll("[data-page]").forEach(button => {
+    button.addEventListener("click", () => showPage(button.dataset.page));
+  });
+
+  document.querySelectorAll("[data-go]").forEach(button => {
+    button.addEventListener("click", () => showPage(button.dataset.go));
+  });
+
+  $("menuButton").addEventListener("click", () => {
+    $("sidebar").classList.toggle("open");
+  });
+
+  function updateBusinessPreview() {
+    const name = business.name.trim() || "Nombre de tu negocio";
+    $("previewName").textContent = name;
+    $("previewDescription").textContent =
+      business.description.trim() || "Aquí aparecerá una breve descripción de tu negocio.";
+
+    $("logoPreview").innerHTML = business.logo
+      ? '<img alt="Logo del negocio" src="' + business.logo + '">'
+      : safeText(name.charAt(0).toUpperCase() || "C");
+
+    $("coverPreview").style.backgroundImage = business.cover
+      ? 'url("' + business.cover + '")'
+      : "";
+
+    $("coverPlaceholder").style.display = business.cover ? "none" : "block";
+
+    $("userAvatar").textContent = name.charAt(0).toUpperCase();
+    $("userEmail").textContent = business.email || "Mi negocio";
+  }
+
+  function loadLocalData() {
+    business = readStore("business", business);
+    services = readStore("services", []);
+    schedules = readStore("schedules", {});
+
+    $("businessName").value = business.name || "";
+    $("businessPhone").value = business.phone || "";
+    $("businessEmail").value = business.email || "";
+    $("businessDescription").value = business.description || "";
+
+    updateBusinessPreview();
+    renderServices();
+    renderSchedules();
+    updateMetrics();
+  }
+
+  function saveBusinessLocally() {
+    business.name = $("businessName").value.trim();
+    business.phone = $("businessPhone").value.trim();
+    business.email = $("businessEmail").value.trim();
+    business.description = $("businessDescription").value.trim();
+
+    const saved = writeStore("business", business);
+    updateBusinessPreview();
+
+    if (saved) {
+      showToast("Información guardada en este navegador.");
+    }
+  }
+
+  $("businessForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveBusinessLocally();
+  });
+
+  function readImage(file, callback) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("Selecciona un archivo de imagen válido.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      showToast("Para esta versión, elige una imagen de menos de 2 MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => callback(reader.result);
+    reader.onerror = () => showToast("No se pudo leer la imagen.");
+    reader.readAsDataURL(file);
+  }
+
+  $("logoFile").addEventListener("change", event => {
+    readImage(event.target.files[0], image => {
+      business.logo = image;
+      writeStore("business", business);
+      updateBusinessPreview();
+      showToast("Vista previa del logo actualizada.");
+    });
+  });
+
+  $("coverFile").addEventListener("change", event => {
+    readImage(event.target.files[0], image => {
+      business.cover = image;
+      writeStore("business", business);
+      updateBusinessPreview();
+      showToast("Vista previa de la portada actualizada.");
+    });
+  });
+
+  function updateMetrics() {
+    $("metricServices").textContent = services.length;
+    // Las reservas y los clientes se conectarán a los datos reales más adelante.
+  }
+
+  function renderServices() {
+    const container = $("servicesContainer");
+    updateMetrics();
+
+    if (!services.length) {
+      container.innerHTML =
+        '<div class="empty" style="grid-column:1/-1">' +
+        '<div style="font-size:30px;margin-bottom:12px">✦</div>' +
+        '<strong>Aún no has añadido servicios</strong><br>' +
+        'Pulsa “Añadir servicio” para crear el primero.' +
+        '</div>';
+      return;
+    }
+
+    container.innerHTML = services.map(service => {
+      const photo = service.photo
+        ? '<img alt="' + safeText(service.name) + '" src="' + service.photo + '">'
+        : '<span>Foto opcional del servicio</span>';
+
+      return `
+        <article class="service-card">
+          <div class="service-photo">${photo}</div>
+          <div class="service-body">
+            <h3>${safeText(service.name)}</h3>
+            <div class="price">${Number(service.price).toLocaleString("es-ES", {
+              style: "currency", currency: "EUR"
+            })}</div>
+            ${service.description
+              ? '<p>' + safeText(service.description) + '</p>'
+              : '<p class="muted">Sin descripción</p>'}
+            <div class="service-bottom">
+              <button class="btn btn-small" data-edit-service="${safeText(service.id)}">Editar</button>
+              <button class="btn btn-small btn-danger" data-delete-service="${safeText(service.id)}">Eliminar</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    container.querySelectorAll("[data-edit-service]").forEach(button => {
+      button.addEventListener("click", () => editService(button.dataset.editService));
+    });
+
+    container.querySelectorAll("[data-delete-service]").forEach(button => {
+      button.addEventListener("click", () => deleteService(button.dataset.deleteService));
+    });
+  }
+
+  function openServiceForm(service = null) {
+    $("serviceFormCard").style.display = "block";
+    $("serviceFormTitle").textContent = service ? "Editar servicio" : "Añadir servicio";
+    $("serviceEditId").value = service ? service.id : "";
+    $("serviceName").value = service ? service.name : "";
+    $("servicePrice").value = service ? service.price : "";
+    $("serviceDescription").value = service ? service.description : "";
+    $("servicePhoto").value = "";
+    pendingServicePhoto = service ? service.photo || "" : "";
+    $("servicePhotoHint").textContent = service && service.photo
+      ? "Este servicio ya tiene una foto. Si eliges otra, se sustituirá."
+      : "";
+    $("serviceFormCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $("newServiceButton").addEventListener("click", () => openServiceForm());
+  $("cancelService").addEventListener("click", closeServiceForm);
+
+  function closeServiceForm() {
+    $("serviceFormCard").style.display = "none";
+    $("serviceForm").reset();
+    $("serviceEditId").value = "";
+    pendingServicePhoto = "";
+    $("servicePhotoHint").textContent = "";
+  }
+
+  $("servicePhoto").addEventListener("change", event => {
+    readImage(event.target.files[0], image => {
+      pendingServicePhoto = image;
+      $("servicePhotoHint").textContent = "Foto seleccionada. Se guardará con este servicio en este navegador.";
+    });
+  });
+
+  $("serviceForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const editId = $("serviceEditId").value;
+    const service = {
+      id: editId || (crypto.randomUUID
+        ? crypto.randomUUID()
+        : String(Date.now()) + Math.random().toString(16).slice(2)),
+      name: $("serviceName").value.trim(),
+      price: Number($("servicePrice").value),
+      description: $("serviceDescription").value.trim(),
+      photo: pendingServicePhoto
+    };
+
+    if (!service.name || !Number.isFinite(service.price) || service.price < 0) {
+      showToast("Revisa el nombre y el precio del servicio.");
+      return;
+    }
+
+    if (editId) {
+      services = services.map(item => item.id === editId ? service : item);
+    } else {
+      services.push(service);
+    }
+
+    if (writeStore("services", services)) {
+      renderServices();
+      closeServiceForm();
+      showToast("Servicio guardado en este navegador.");
+    }
+  });
+
+  function editService(id) {
+    const service = services.find(item => item.id === id);
+    if (service) openServiceForm(service);
+  }
+
+  function deleteService(id) {
+    if (!confirm("¿Quieres eliminar este servicio?")) return;
+    services = services.filter(item => item.id !== id);
+    if (writeStore("services", services)) {
+      renderServices();
+      showToast("Servicio eliminado.");
+    }
+  }
+
+  function defaultSchedule() {
+    const result = {};
+    days.forEach(([key]) => {
+      result[key] = {
+        enabled: key !== "domingo",
+        start: "09:00",
+        end: "18:00"
+      };
+    });
+    return result;
+  }
+
+  function renderSchedules() {
+    const defaults = defaultSchedule();
+    const list = $("daysList");
+
+    days.forEach(([key]) => {
+      if (!schedules[key]) schedules[key] = defaults[key];
+    });
+
+    list.innerHTML = days.map(([key, label]) => {
+      const schedule = schedules[key];
+      return `
+        <div class="day-row ${schedule.enabled ? "" : "closed"}" data-day-row="${key}">
+          <div class="day-name">${label}</div>
+          <div class="day-toggle">
+            <label class="switch" aria-label="Activar ${label}">
+              <input type="checkbox" data-day-enabled="${key}" ${schedule.enabled ? "checked" : ""}>
+              <span class="switch-track"></span>
+            </label>
+          </div>
+          <div class="field time-input">
+            <label for="${key}-start">Desde</label>
+            <input id="${key}-start" type="time" data-day-start="${key}" value="${safeText(schedule.start)}" ${schedule.enabled ? "" : "disabled"}>
+          </div>
+          <div class="field time-input">
+            <label for="${key}-end">Hasta</label>
+            <input id="${key}-end" type="time" data-day-end="${key}" value="${safeText(schedule.end)}" ${schedule.enabled ? "" : "disabled"}>
+          </div>
+          <div class="day-state">
+            <span class="${schedule.enabled ? "open-label" : "closed-label"}" data-day-state="${key}">
+              ${schedule.enabled ? "● Abierto" : "○ Cerrado"}
+            </span>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    list.querySelectorAll("[data-day-enabled]").forEach(input => {
+      input.addEventListener("change", () => {
+        const key = input.dataset.dayEnabled;
+        schedules[key].enabled = input.checked;
+
+        const row = list.querySelector(`[data-day-row="${key}"]`);
+        row.classList.toggle("closed", !input.checked);
+
+        row.querySelectorAll(".time-input input").forEach(timeInput => {
+          timeInput.disabled = !input.checked;
+        });
+
+        const state = row.querySelector("[data-day-state]");
+        state.textContent = input.checked ? "● Abierto" : "○ Cerrado";
+        state.className = input.checked ? "open-label" : "closed-label";
+      });
+    });
+
+    list.querySelectorAll("[data-day-start]").forEach(input => {
+      input.addEventListener("change", () => {
+        schedules[input.dataset.dayStart].start = input.value;
+      });
+    });
+
+    list.querySelectorAll("[data-day-end]").forEach(input => {
+      input.addEventListener("change", () => {
+        schedules[input.dataset.dayEnd].end = input.value;
+      });
+    });
+  }
+
+  $("scheduleForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    for (const [key, label] of days) {
+      const schedule = schedules[key];
+      const start = $(`${key}-start`).value;
+      const end = $(`${key}-end`).value;
+
+      if (schedule.enabled && (!start || !end || start >= end)) {
+        showToast(`Revisa el horario de ${label}: la hora final debe ser posterior a la inicial.`);
+        return;
+      }
+
+      schedule.start = start;
+      schedule.end = end;
+    }
+
+    if (writeStore("schedules", schedules)) {
+      showToast("Horarios guardados en este navegador.");
+    }
+  });
+
+  async function loadExistingBusiness() {
+    // Se intenta recuperar la sesión existente de CurioReservas.
+    // No se crea ni se modifica ninguna fila automáticamente.
+    try {
+      const rawUser = localStorage.getItem("curioreservas_user");
+      const token = sessionStorage.getItem("curioreservas_access_token");
+
+      if (!rawUser || !token) return;
+
+      const user = JSON.parse(rawUser);
+      if (!user || !user.id) return;
+
+      const supabaseUrl = "https://jstcvnprvpcizjqdpzes.supabase.co";
+
+      // Pega aquí la clave pública anon de TU proyecto Supabase.
+      const supabaseAnonKey = "PEGA_AQUI_TU_CLAVE_PUBLICA_ANON";
+
+      if (supabaseAnonKey === "PEGA_AQUI_TU_CLAVE_PUBLICA_ANON") {
+        console.info("Supabase: falta configurar la clave pública anon.");
+        return;
+      }
+
+      const query = new URLSearchParams({
+        owner_id: "eq." + user.id,
+        select: "*",
+        limit: "1"
+      });
+
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/businesses?${query.toString()}`,
+        {
+          headers: {
+            apikey: supabaseAnonKey,
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+
+      if (!response.ok) {
+        console.warn("No se pudieron recuperar los datos del negocio.");
+        return;
+      }
+
+      const rows = await response.json();
+      if (!Array.isArray(rows) || !rows.length) return;
+
+      const row = rows[0];
+
+      // Se usan los datos existentes como valores iniciales.
+      // No se sobrescriben los datos locales ya guardados.
+      if (!business.name) business.name = row.Name || "";
+      if (!business.phone) business.phone = row.Phone || "";
+      if (!business.email) business.email = row.email || user.email || "";
+      if (!business.description) business.description = row.Description || "";
+
+      $("businessName").value = business.name;
+      $("businessPhone").value = business.phone;
+      $("businessEmail").value = business.email;
+      $("businessDescription").value = business.description;
+
+      writeStore("business", business);
+      updateBusinessPreview();
+    } catch (error) {
+      console.warn("No se pudieron cargar los datos del negocio.", error);
+    }
+  }
+
+  loadLocalData();
+  loadExistingBusiness();
+})();
+</script>
+</body>
+</html>
