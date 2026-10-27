@@ -999,7 +999,7 @@ async function saveBusinessLocally() {
   const supabaseKey = "sb_publishable_RhkydSq-oeSxpNJ5LRVZQg_yiQvdBKc";
 
   try {
-    const rawUser = localStorage.getItem("curioreservas_user");
+    const rawUser = sessionStorage.getItem("curioreservas_user");
     const token = sessionStorage.getItem("curioreservas_access_token");
 
     if (!rawUser || !token) {
