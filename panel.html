@@ -212,12 +212,18 @@
           "&select=*&limit=1",
           { headers }
         );
+        
         if (!response.ok) {
+          const detalle = await response.text();
+
           throw new Error(
-            "No pudimos comprobar tu negocio en Supabase. " +
-            "Revisa los permisos de la tabla businesses."
+            "Error de Supabase (" +
+            response.status +
+            "): " +
+            detalle
           );
         }
+
         let businesses = await response.json();
         // Si no aparece por propietario, buscamos por correo.
         if (!businesses.length && user.email) {
