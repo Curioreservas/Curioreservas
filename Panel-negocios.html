@@ -1182,37 +1182,100 @@ async function saveBusinessLocally() {
     });
   });
 
-  $("serviceForm").addEventListener("submit", event => {
-    event.preventDefault();
 
-    const editId = $("serviceEditId").value;
-    const service = {
-      id: editId || (crypto.randomUUID
-        ? crypto.randomUUID()
-        : String(Date.now()) + Math.random().toString(16).slice(2)),
-      name: $("serviceName").value.trim(),
-      price: Number($("servicePrice").value),
-      description: $("serviceDescription").value.trim(),
-      photo: pendingServicePhoto
-    };
+$("serviceForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-    if (!service.name || !Number.isFinite(service.price) || service.price < 0) {
-      showToast("Revisa el nombre y el precio del servicio.");
+  const editId = $("serviceEditId").value;
+  const service = {
+    name: $("serviceName").value.trim(),
+    price: Number($("servicePrice").value),
+    description: $("serviceDescription").value.trim()
+  };
+
+  if (
+    !service.name ||
+    !Number.isFinite(service.price) ||
+    service.price < 0
+  ) {
+    showToast("Revisa el nombre y el precio del servicio.");
+    return;
+  }
+
+  const supabaseUrl = "https://jstcvnprvpcizjqdpzes.supabase.co";
+  const supabaseKey = "sb_publishable_RhkydSq-oeSxpNJ5LRVZQg_yiQvdBKc";
+
+  try {
+    const rawUser = sessionStorage.getItem("curioreservas_user");
+    const token = sessionStorage.getItem("curioreservas_access_token");
+
+    if (!rawUser || !token) {
+      showToast("Inicia sesión nuevamente.");
       return;
     }
 
-    if (editId) {
-      services = services.map(item => item.id === editId ? service : item);
-    } else {
-      services.push(service);
+    const user = JSON.parse(rawUser);
+
+    const url = editId
+      ? `${supabaseUrl}/rest/v1/services?id=eq.${encodeURIComponent(editId)}&owner_id=eq.${encodeURIComponent(user.id)}`
+      : `${supabaseUrl}/rest/v1/services`;
+
+    const response = await fetch(url, {
+      method: editId ? "PATCH" : "POST",
+      headers: {
+        "apikey": supabaseKey,
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify({
+        ...service,
+        owner_id: user.id
+      })
+    });
+
+    if (!response.ok) {
+      console.error("Error de Supabase:", await response.text());
+      showToast("No se pudo guardar el servicio.");
+      return;
     }
 
-    if (writeStore("services", services)) {
-      renderServices();
-      closeServiceForm();
-      showToast("Servicio guardado en este navegador.");
+    const result = await response.json();
+
+    if (!result.length) {
+      showToast("No se guardó ningún servicio. Revisa los permisos.");
+      return;
     }
-  });
+
+    const saved = result[0];
+
+    const localService = {
+      id: saved.id,
+      name: saved.name,
+      price: Number(saved.price),
+      description: saved.description || "",
+      photo: pendingServicePhoto
+    };
+
+    if (editId) {
+      services = services.map(item =>
+        item.id === editId ? localService : item
+      );
+    } else {
+      services.push(localService);
+    }
+
+    writeStore("services", services);
+    renderServices();
+    closeServiceForm();
+    showToast("¡Servicio guardado en Supabase!");
+
+  } catch (error) {
+    console.error("Error al guardar el servicio:", error);
+    showToast("No se pudo conectar con Supabase.");
+  }
+});
+
 
   function editService(id) {
     const service = services.find(item => item.id === id);
