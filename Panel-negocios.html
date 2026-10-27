@@ -1339,14 +1339,63 @@ $("serviceForm").addEventListener("submit", async event => {
     if (service) openServiceForm(service);
   }
 
-  function deleteService(id) {
-    if (!confirm("¿Quieres eliminar este servicio?")) return;
-    services = services.filter(item => item.id !== id);
-    if (writeStore("services", services)) {
-      renderServices();
-      showToast("Servicio eliminado.");
+  
+async function deleteService(id) {
+  if (!confirm("¿Quieres eliminar este servicio?")) return;
+
+  const supabaseUrl = "https://jstcvnprvpcizjqdpzes.supabase.co";
+  const supabaseKey = "sb_publishable_RhkydSq-oeSxpNJ5LRVZQg_yiQvdBKc";
+
+  try {
+    const rawUser = sessionStorage.getItem("curioreservas_user");
+    const token = sessionStorage.getItem("curioreservas_access_token");
+
+    if (!rawUser || !token) {
+      showToast("Inicia sesión nuevamente.");
+      return;
     }
+
+    const user = JSON.parse(rawUser);
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/services?id=eq.${encodeURIComponent(id)}&owner_id=eq.${encodeURIComponent(user.id)}`,
+      {
+        method: "DELETE",
+        headers: {
+          "apikey": supabaseKey,
+          "Authorization": `Bearer ${token}`,
+          "Prefer": "return=representation"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Error al eliminar:", await response.text());
+      showToast("No se pudo eliminar el servicio de Supabase.");
+      return;
+    }
+
+    const deleted = await response.json();
+
+    if (!deleted.length) {
+      showToast("Supabase no eliminó el registro. Comprueba los permisos.");
+      return;
+    }
+
+    services = services.filter(item => item.id !== id);
+
+    writeStore("services", services);
+    renderServices();
+    updateMetrics();
+
+    showToast("¡Servicio eliminado de Supabase!");
+
+  } catch (error) {
+    console.error("Error al eliminar el servicio:", error);
+    showToast("No se pudo conectar con Supabase.");
   }
+}
+
 
   function defaultSchedule() {
     const result = {};
