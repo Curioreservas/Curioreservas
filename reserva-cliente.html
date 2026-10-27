@@ -1,1 +1,732 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080a18">
+<title>CURIORESERVAS | Reserva tu cita</title>
+
+<style>
+:root {
+  --bg:#080a18;
+  --panel:#11162c;
+  --panel2:#171d38;
+  --purple:#8b5cf6;
+  --purple2:#a855f7;
+  --white:#f8f7ff;
+  --muted:#a6abc7;
+  --border:#30365c;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  color:var(--white);
+  background:radial-gradient(ellipse at top,#28204d 0,var(--bg) 48%);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button,input { font:inherit; }
+button { cursor:pointer; }
+.app { width:min(100%,760px); margin:auto; padding-bottom:35px; }
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-align:left;
+}
+.brand-logo {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:45px;
+  height:45px;
+  flex-shrink:0;
+  border:1px solid #c4b5fd;
+  border-radius:13px;
+  background:linear-gradient(135deg,#a855f7,#6d28d9);
+  box-shadow:0 0 20px #8b5cf655;
+  color:white;
+  font-size:19px;
+  font-weight:950;
+  letter-spacing:-2px;
+}
+.brand-logo .r { color:#171027; }
+.brand-name {
+  font-size:19px;
+  line-height:1.2;
+  font-weight:900;
+  letter-spacing:-.6px;
+  white-space:nowrap;
+}
+.brand-name .curio { color:#a855f7; }
+.brand-name .reservas { color:#fff; }
+.brand small {
+  display:block;
+  margin-top:4px;
+  color:#d2c6fa;
+  font-size:10px;
+  font-weight:400;
+  letter-spacing:0;
+}
+
+.hero {
+  position:relative;
+  overflow:hidden;
+  min-height:390px;
+  padding:20px 18px 26px;
+  text-align:center;
+  background:#17162b;
+  border:1px solid #493478;
+  border-radius:0 0 26px 26px;
+}
+.cover {
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(7,9,24,.25),#080a18 92%),
+    url("https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1200&q=80")
+    center 42%/cover;
+  filter:blur(2px);
+  transform:scale(1.04);
+  opacity:.72;
+}
+.hero > *:not(.cover) { position:relative; z-index:1; }
+.business-logo {
+  display:grid;
+  place-items:center;
+  width:105px;
+  height:105px;
+  margin:35px auto 12px;
+  border:3px solid #b38cff;
+  border-radius:50%;
+  background:#101329;
+  box-shadow:0 0 30px #8b5cf666;
+  font-size:43px;
+}
+h1 { margin:10px 0 5px; font-size:26px; }
+.subtitle,.muted { color:var(--muted); }
+
+.quick-links {
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  margin:24px 0;
+}
+.quick-links button {
+  border:0;
+  color:#e4d9ff;
+  background:transparent;
+  font-size:12px;
+}
+.quick-links span { display:block; margin-bottom:7px; font-size:22px; }
+
+.section { padding:22px 16px 0; }
+.section-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:14px;
+}
+h2 { margin:0; font-size:19px; }
+.service-list { display:grid; gap:12px; }
+.service {
+  display:grid;
+  grid-template-columns:100px minmax(0,1fr);
+  gap:13px;
+  padding:11px;
+  background:linear-gradient(145deg,#171d38,#101429);
+  border:1px solid var(--border);
+  border-radius:17px;
+}
+.service img {
+  width:100px;
+  height:112px;
+  object-fit:cover;
+  border-radius:12px;
+}
+.service h3 { margin:4px 0 7px; font-size:15px; }
+.service p { margin:0 0 9px; color:var(--muted); font-size:12px; }
+.service-bottom {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.price { font-weight:800; }
+.primary,.secondary,.time {
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:white;
+  padding:11px 14px;
+}
+.primary {
+  background:linear-gradient(110deg,var(--purple),#7c3aed);
+  border-color:transparent;
+  font-weight:700;
+  box-shadow:0 4px 18px #7c3aed30;
+}
+.secondary { background:transparent; }
+.primary:disabled { opacity:.45; cursor:not-allowed; }
+
+.booking-box {
+  padding:17px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+}
+.selected-service {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px;
+  margin-bottom:18px;
+  background:#1b2040;
+  border-radius:12px;
+}
+.calendar-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:15px;
+}
+.calendar-header button {
+  color:#d8c5ff;
+  background:#242044;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:8px 12px;
+}
+.calendar-grid {
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:6px;
+  text-align:center;
+}
+.weekday { padding:7px 0; color:var(--muted); font-size:12px; }
+.day {
+  min-height:39px;
+  border:1px solid transparent;
+  border-radius:10px;
+  color:white;
+  background:#1a203d;
+}
+.day:disabled {
+  color:#515773;
+  background:#101429;
+  cursor:not-allowed;
+}
+.day.selected,.time.selected {
+  background:linear-gradient(135deg,#a855f7,#6d28d9);
+  border-color:#c4a5ff;
+  box-shadow:0 0 14px #8b5cf644;
+}
+.times {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin:13px 0;
+}
+.time { background:#151a32; min-height:43px; }
+.time:disabled { opacity:.28; cursor:not-allowed; }
+
+label {
+  display:block;
+  margin:15px 0 7px;
+  color:#e5defc;
+  font-size:13px;
+}
+input {
+  width:100%;
+  padding:13px;
+  color:white;
+  background:#0b0f22;
+  border:1px solid var(--border);
+  border-radius:11px;
+  outline:none;
+}
+input:focus { border-color:var(--purple); }
+.full { width:100%; margin-top:16px; }
+.notice {
+  padding:12px;
+  margin-top:14px;
+  color:#d8c5ff;
+  background:#211b40;
+  border-radius:12px;
+  font-size:12px;
+  line-height:1.6;
+}
+.success {
+  padding:30px 20px;
+  text-align:center;
+  background:var(--panel);
+  border:1px solid #7544c7;
+  border-radius:22px;
+}
+.check {
+  display:grid;
+  place-items:center;
+  width:78px;
+  height:78px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#a855f7,#6d28d9);
+  box-shadow:0 0 35px #8b5cf677;
+  font-size:38px;
+}
+.summary {
+  padding:16px;
+  margin:20px 0;
+  text-align:left;
+  overflow-wrap:anywhere;
+  background:#191e39;
+  border-radius:14px;
+  line-height:2;
+  font-size:14px;
+}
+.hidden { display:none!important; }
+#confetti {
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:10;
+}
+.footer {
+  padding:32px 10px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+.footer .brand { justify-content:center; }
+
+@media(min-width:600px) {
+  .hero { margin-top:18px; border-radius:25px; }
+  .service-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .service { grid-template-columns:85px minmax(0,1fr); }
+  .service img { width:85px; height:105px; }
+}
+</style>
+</head>
+
+<body>
+<canvas id="confetti"></canvas>
+
+<main class="app">
+  <header class="hero">
+    <div class="cover"></div>
+
+    <div class="brand">
+      <div class="brand-logo">C<span class="r">R</span></div>
+      <div>
+        <div class="brand-name"><span class="curio">CURIO</span><span class="reservas">RESERVAS</span></div>
+        <small>Reserva fácil, vive la experiencia</small>
+      </div>
+    </div>
+
+    <div class="business-logo" id="businessLogo">✿</div>
+    <h1 id="businessName">Tu negocio</h1>
+    <p class="subtitle" id="businessCategory">Belleza · Bienestar · Cuidado personal</p>
+    <p>⭐ <span id="rating">Nuevo negocio</span> · 📍 <span id="location">Consulta la ubicación</span></p>
+
+    <nav class="quick-links">
+      <button onclick="goTo('scheduleSection')"><span>◷</span>Horario</button>
+      <button onclick="goTo('businessInfo')"><span>♧</span>Información</button>
+      <button onclick="sharePage()"><span>↗</span>Compartir</button>
+    </nav>
+
+    <p class="muted">Encuentra tu servicio ideal y reserva en unos sencillos pasos.</p>
+  </header>
+
+  <section class="section" id="servicesSection">
+    <div class="section-heading">
+      <h2>Nuestros servicios</h2>
+      <span class="muted" id="serviceCount"></span>
+    </div>
+    <div class="service-list" id="serviceList"></div>
+  </section>
+
+  <section class="section hidden" id="bookingSection">
+    <div class="section-heading">
+      <h2>Reserva tu cita</h2>
+      <button class="secondary" onclick="backToServices()">← Volver</button>
+    </div>
+
+    <div class="booking-box">
+      <div class="selected-service">
+        <div>
+          <strong id="chosenName"></strong>
+          <p class="muted" id="chosenDuration">Selecciona el día y la hora</p>
+        </div>
+        <strong id="chosenPrice"></strong>
+      </div>
+
+      <div id="scheduleSection">
+        <div class="calendar-header">
+          <button onclick="changeMonth(-1)" aria-label="Mes anterior">‹</button>
+          <strong id="monthLabel"></strong>
+          <button onclick="changeMonth(1)" aria-label="Mes siguiente">›</button>
+        </div>
+        <div class="calendar-grid" id="calendar">
+          <div class="weekday">L</div><div class="weekday">M</div>
+          <div class="weekday">X</div><div class="weekday">J</div>
+          <div class="weekday">V</div><div class="weekday">S</div>
+          <div class="weekday">D</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:24px">Horarios disponibles</h3>
+      <p class="muted" id="timeHint">Elige primero un día del calendario.</p>
+      <div class="times" id="timeList"></div>
+
+      <div class="notice">
+        Horarios de demostración. La disponibilidad real se conectará
+        con el calendario del negocio antes de activar las reservas.
+      </div>
+
+      <form id="bookingForm">
+        <h3 style="margin-top:25px">Tus datos</h3>
+        <p class="muted">No necesitas crear una cuenta ni una contraseña.</p>
+
+        <label for="customerName">Nombre y apellidos *</label>
+        <input id="customerName" autocomplete="name" required maxlength="100" placeholder="Tu nombre completo">
+
+        <label for="customerPhone">Teléfono móvil *</label>
+        <input id="customerPhone" type="tel" autocomplete="tel" required maxlength="25" placeholder="+34 600 000 000">
+
+        <label for="customerEmail">Correo electrónico (opcional)</label>
+        <input id="customerEmail" type="email" autocomplete="email" maxlength="150" placeholder="tu@correo.com">
+
+        <button class="primary full" type="submit">Confirmar reserva</button>
+        <p class="muted" style="font-size:11px;line-height:1.6">
+          En la versión final, tus datos se compartirán con el negocio
+          para gestionar tu cita. Esta demostración todavía no envía reservas.
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <section class="section hidden" id="successSection">
+    <div class="success">
+      <div class="check">✓</div>
+      <h2>¡Reserva confirmada!</h2>
+      <p class="muted">Tu cita está preparada en esta demostración.</p>
+      <div class="summary" id="confirmationSummary"></div>
+      <button class="primary full" onclick="downloadCalendar()">＋ Agregar a mi calendario</button>
+      <button class="secondary full" onclick="resetBooking()">Volver a los servicios</button>
+      <div class="notice">
+        Esta confirmación es visual. El registro real de la cita y los SMS
+        se activarán al conectar el sistema.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="businessInfo">
+    <div class="booking-box">
+      <h2>Sobre nosotros</h2>
+      <p class="muted">Descubre los servicios de este negocio y reserva tu próxima cita.</p>
+      <p>Horario de atención: <span class="muted">Se configurará con el negocio.</span></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="brand">
+      <div class="brand-logo">C<span class="r">R</span></div>
+      <div>
+        <div class="brand-name"><span class="curio">CURIO</span><span class="reservas">RESERVAS</span></div>
+        <small>Reserva fácil, vive la experiencia</small>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+const services = [
+  {
+    id:"demo-1",
+    name:"Limpieza facial profunda",
+    description:"Cuidado y limpieza facial",
+    price:45,
+    duration:60,
+    image:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    id:"demo-2",
+    name:"Hidratación facial",
+    description:"Un extra de hidratación",
+    price:50,
+    duration:60,
+    image:"https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    id:"demo-3",
+    name:"Manicura semipermanente",
+    description:"Cuidado y color para tus uñas",
+    price:25,
+    duration:45,
+    image:"https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=500&q=80"
+  },
+  {
+    id:"demo-4",
+    name:"Masaje relajante",
+    description:"Un momento para desconectar",
+    price:50,
+    duration:60,
+    image:"https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=500&q=80"
+  }
+];
+
+let selectedService=null;
+let selectedDate=null;
+let selectedTime=null;
+let monthDate=new Date();
+let confirmedDemo=null;
+const $=id=>document.getElementById(id);
+
+function money(value) {
+  return new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR"}).format(value);
+}
+
+function renderServices() {
+  $("serviceCount").textContent=services.length+" servicios";
+  $("serviceList").innerHTML=services.map(service=>`
+    <article class="service">
+      <img src="${service.image}" alt="${service.name}" loading="lazy">
+      <div>
+        <h3>${service.name}</h3>
+        <p>◷ ${service.duration} min</p>
+        <p>${service.description}</p>
+        <div class="service-bottom">
+          <span class="price">${money(service.price)}</span>
+          <button class="primary" onclick="chooseService('${service.id}')">Reservar</button>
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+
+function chooseService(id) {
+  selectedService=services.find(service=>service.id===id);
+  if(!selectedService)return;
+  selectedDate=null;
+  selectedTime=null;
+  $("chosenName").textContent=selectedService.name;
+  $("chosenDuration").textContent=selectedService.duration+" minutos";
+  $("chosenPrice").textContent=money(selectedService.price);
+  $("servicesSection").classList.add("hidden");
+  $("businessInfo").classList.add("hidden");
+  $("successSection").classList.add("hidden");
+  $("bookingSection").classList.remove("hidden");
+  renderCalendar();
+  renderTimes();
+  goTo("bookingSection");
+}
+
+function backToServices() {
+  $("bookingSection").classList.add("hidden");
+  $("servicesSection").classList.remove("hidden");
+  $("businessInfo").classList.remove("hidden");
+  goTo("servicesSection");
+}
+
+function changeMonth(amount) {
+  monthDate=new Date(monthDate.getFullYear(),monthDate.getMonth()+amount,1);
+  renderCalendar();
+}
+
+function sameDay(a,b) {
+  return a&&b&&a.getFullYear()===b.getFullYear()&&
+    a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+}
+
+function renderCalendar() {
+  const year=monthDate.getFullYear(), month=monthDate.getMonth();
+  $("monthLabel").textContent=new Intl.DateTimeFormat("es-ES",{month:"long",year:"numeric"}).format(monthDate);
+  const calendar=$("calendar");
+  calendar.innerHTML="<div class='weekday'>L</div><div class='weekday'>M</div><div class='weekday'>X</div><div class='weekday'>J</div><div class='weekday'>V</div><div class='weekday'>S</div><div class='weekday'>D</div>";
+
+  const firstDay=(new Date(year,month,1).getDay()+6)%7;
+  const daysInMonth=new Date(year,month+1,0).getDate();
+
+  for(let i=0;i<firstDay;i++)calendar.insertAdjacentHTML("beforeend","<div></div>");
+
+  for(let day=1;day<=daysInMonth;day++) {
+    const date=new Date(year,month,day);
+    date.setHours(0,0,0,0);
+    const today=new Date();
+    today.setHours(0,0,0,0);
+    const button=document.createElement("button");
+    button.className="day"+(sameDay(date,selectedDate)?" selected":"");
+    button.textContent=day;
+    button.disabled=date<today;
+    button.addEventListener("click",()=>{
+      selectedDate=date;
+      selectedTime=null;
+      renderCalendar();
+      renderTimes();
+    });
+    calendar.appendChild(button);
+  }
+}
+
+function renderTimes() {
+  const times=["09:00","10:00","11:00","12:00","14:00","15:00","16:00","17:00","18:00"];
+  $("timeList").innerHTML="";
+  $("timeHint").textContent=selectedDate?"Elige una hora para continuar.":"Elige primero un día del calendario.";
+  times.forEach(time=>{
+    const button=document.createElement("button");
+    button.className="time"+(selectedTime===time?" selected":"");
+    button.textContent=time;
+    button.disabled=!selectedDate;
+    button.addEventListener("click",()=>{
+      selectedTime=time;
+      renderTimes();
+    });
+    $("timeList").appendChild(button);
+  });
+}
+
+$("bookingForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  if(!selectedService||!selectedDate||!selectedTime) {
+    alert("Selecciona un servicio, un día y una hora.");
+    return;
+  }
+
+  confirmedDemo={
+    service:selectedService.name,
+    price:selectedService.price,
+    duration:selectedService.duration,
+    date:selectedDate,
+    time:selectedTime,
+    name:$("customerName").value.trim(),
+    phone:$("customerPhone").value.trim(),
+    email:$("customerEmail").value.trim()
+  };
+
+  if(!confirmedDemo.name||!confirmedDemo.phone) {
+    alert("Completa tu nombre y teléfono.");
+    return;
+  }
+
+  const dateText=selectedDate.toLocaleDateString("es-ES",{
+    weekday:"long",day:"numeric",month:"long",year:"numeric"
+  });
+
+  $("confirmationSummary").innerHTML=`
+    <strong>Servicio:</strong> ${confirmedDemo.service}<br>
+    <strong>Fecha:</strong> ${dateText}<br>
+    <strong>Hora:</strong> ${confirmedDemo.time}<br>
+    <strong>Duración:</strong> ${confirmedDemo.duration} min<br>
+    <strong>Precio:</strong> ${money(confirmedDemo.price)}<br>
+    <strong>Nombre:</strong> ${confirmedDemo.name}<br>
+    <strong>Teléfono:</strong> ${confirmedDemo.phone}
+  `;
+
+  $("bookingSection").classList.add("hidden");
+  $("successSection").classList.remove("hidden");
+  goTo("successSection");
+  launchConfetti();
+});
+
+function downloadCalendar() {
+  if(!confirmedDemo)return;
+  const start=new Date(confirmedDemo.date);
+  const [hours,minutes]=confirmedDemo.time.split(":").map(Number);
+  start.setHours(hours,minutes,0,0);
+  const end=new Date(start.getTime()+confirmedDemo.duration*60000);
+
+  function formatDate(date) {
+    return date.getFullYear()+
+      String(date.getMonth()+1).padStart(2,"0")+
+      String(date.getDate()).padStart(2,"0")+"T"+
+      String(date.getHours()).padStart(2,"0")+
+      String(date.getMinutes()).padStart(2,"0")+"00";
+  }
+
+  const escapeICS=text=>text.replace(/\\/g,"\\\\").replace(/[,;]/g," ").replace(/\n/g," ");
+  const ics=[
+    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//CURIORESERVAS//ES",
+    "BEGIN:VEVENT","DTSTART:"+formatDate(start),"DTEND:"+formatDate(end),
+    "SUMMARY:"+escapeICS(confirmedDemo.service),
+    "DESCRIPTION:Cita de demostración en CURIORESERVAS",
+    "END:VEVENT","END:VCALENDAR"
+  ].join("\r\n");
+
+  const blob=new Blob([ics],{type:"text/calendar;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download="mi-cita-curioreservas.ics";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function resetBooking() {
+  confirmedDemo=null;
+  $("successSection").classList.add("hidden");
+  $("bookingSection").classList.add("hidden");
+  $("servicesSection").classList.remove("hidden");
+  $("businessInfo").classList.remove("hidden");
+  $("bookingForm").reset();
+  goTo("servicesSection");
+}
+
+function goTo(id) {
+  $(id).scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+async function sharePage() {
+  if(navigator.share) {
+    try {
+      await navigator.share({title:"CURIORESERVAS",text:"Mira los servicios y reserva tu cita.",url:location.href});
+    } catch(_) {}
+  } else if(navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      alert("Enlace copiado.");
+    } catch(_) {
+      alert("Puedes copiar el enlace desde el navegador.");
+    }
+  }
+}
+
+function launchConfetti() {
+  const canvas=$("confetti"),ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  const pieces=Array.from({length:130},()=>({
+    x:Math.random()*canvas.width,
+    y:-Math.random()*canvas.height,
+    size:4+Math.random()*6,
+    speed:2+Math.random()*4,
+    drift:Math.random()*3-1.5,
+    color:["#a855f7","#8b5cf6","#f0abfc","#ffffff"][Math.floor(Math.random()*4)]
+  }));
+  let frame=0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(piece=>{
+      ctx.fillStyle=piece.color;
+      ctx.fillRect(piece.x,piece.y,piece.size,piece.size);
+      piece.y+=piece.speed;
+      piece.x+=piece.drift;
+    });
+    frame++;
+    if(frame<150)requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+renderServices();
+renderCalendar();
+renderTimes();
+</script>
+</body>
+</html>
+
