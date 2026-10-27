@@ -966,21 +966,78 @@
     $("userEmail").textContent = business.email || "Mi negocio";
   }
 
-  function loadLocalData() {
-    business = readStore("business", business);
-    services = readStore("services", []);
-    schedules = readStore("schedules", {});
+  
+async function loadLocalData() {
+  business = readStore("business", business);
+  services = readStore("services", []);
+  schedules = readStore("schedules", {});
 
-    $("businessName").value = business.name || "";
-    $("businessPhone").value = business.phone || "";
-    $("businessEmail").value = business.email || "";
-    $("businessDescription").value = business.description || "";
+  $("businessName").value = business.name || "";
+  $("businessPhone").value = business.phone || "";
+  $("businessEmail").value = business.email || "";
+  $("businessDescription").value = business.description || "";
 
-    updateBusinessPreview();
+  updateBusinessPreview();
+  renderServices();
+  renderSchedules();
+  updateMetrics();
+
+  const supabaseUrl = "https://jstcvnprvpcizjqdpzes.supabase.co";
+  const supabaseKey = "sb_publishable_RhkydSq-oeSxpNJ5LRVZQg_yiQvdBKc";
+
+  try {
+    const rawUser = sessionStorage.getItem("curioreservas_user");
+    const token = sessionStorage.getItem("curioreservas_access_token");
+
+    if (!rawUser || !token) return;
+
+    const user = JSON.parse(rawUser);
+    if (!user.id) return;
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/services?select=*&owner_id=eq.${encodeURIComponent(user.id)}&order=created_at.desc`,
+      {
+        method: "GET",
+        headers: {
+          "apikey": supabaseKey,
+          "Authorization": `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Error al cargar servicios:", await response.text());
+      showToast("No se pudieron cargar los servicios desde Supabase.");
+      return;
+    }
+
+    const savedServices = await response.json();
+
+    const previousServices = services;
+
+    services = savedServices.map(item => {
+      const previous = previousServices.find(
+        service => service.id === item.id
+      );
+
+      return {
+        id: item.id,
+        name: item.name,
+        price: Number(item.price),
+        description: item.description || "",
+        photo: previous ? previous.photo : ""
+      };
+    });
+
+    writeStore("services", services);
     renderServices();
-    renderSchedules();
     updateMetrics();
+
+  } catch (error) {
+    console.error("Error al cargar servicios:", error);
+    showToast("No se pudieron cargar los servicios.");
   }
+}
 
 async function saveBusinessLocally() {
   business.name = $("businessName").value.trim();
