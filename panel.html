@@ -231,7 +231,128 @@
     }
 
 
-    async function createBusiness(user, accessToken) {
+    
+async function createBusiness(user, accessToken) {
+  button.disabled = true;
+  button.textContent = "COMPROBANDO TU NEGOCIO...";
+
+  try {
+    const headers = {
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": "Bearer " + accessToken
+    };
+
+    // 1. Primero buscamos el negocio por el usuario propietario.
+    let response = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/businesses?owner_id=eq." +
+      encodeURIComponent(user.id) +
+      "&select=*&limit=1",
+      { headers }
+    );
+
+    if (!response.ok) {
+      throw new Error("No pudimos comprobar tu negocio en Supabase.");
+    }
+
+    let businesses = await response.json();
+
+    // 2. Si no aparece, comprobamos también por el correo de la cuenta.
+    if (!businesses.length && user.email) {
+      response = await fetch(
+        SUPABASE_URL +
+        "/rest/v1/businesses?email=eq." +
+        encodeURIComponent(user.email) +
+        "&select=*&limit=1",
+        { headers }
+      );
+
+      if (!response.ok) {
+        throw new Error("No pudimos comprobar el negocio por correo.");
+      }
+
+      businesses = await response.json();
+    }
+
+    // 3. Si ya existe, NO creamos otro.
+    if (businesses.length > 0) {
+      localStorage.removeItem("curioreservas_pending_business");
+      window.location.href = "panel-negocios.html";
+      return;
+    }
+
+    // 4. Solo creamos el negocio si no existe ninguno.
+    const pending = localStorage.getItem(
+      "curioreservas_pending_business"
+    );
+
+    if (!pending) {
+      throw new Error(
+        "No encontramos un negocio existente ni los datos pendientes para crear uno. No se ha creado ningún registro nuevo."
+      );
+    }
+
+    const business = JSON.parse(pending);
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 30);
+
+    button.textContent = "CREANDO TU NEGOCIO...";
+
+    response = await fetch(
+      SUPABASE_URL + "/rest/v1/businesses",
+      {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({
+          owner_id: user.id,
+          owner_name: user.email,
+          Name: business.businessName,
+          email: business.email || user.email,
+          Phone: business.phone,
+          Description: business.description,
+          monthly_price: 9.99,
+          Subscription_status: "trial",
+          trial_enabled: true,
+          Trial_start: startDate.toISOString(),
+          Trial_end: endDate.toISOString()
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.message ||
+        result.details ||
+        "No se pudo crear el negocio en Supabase."
+      );
+    }
+
+    // 5. Solo después de crear correctamente, limpiamos los pendientes.
+    localStorage.removeItem("curioreservas_pending_business");
+
+    // 6. Abrimos el nuevo panel.
+    window.location.href = "panel-negocios.html";
+
+  } catch (error) {
+    console.error("Error de CurioReservas:", error);
+
+    showMessage(
+      error.message || "Ha ocurrido un error.",
+      "error"
+    );
+
+    button.disabled = false;
+    button.textContent = "CREAR MI NEGOCIO →";
+  }
+}
+
 
       button.disabled = true;
 
