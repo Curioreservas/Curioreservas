@@ -982,19 +982,78 @@
     updateMetrics();
   }
 
-  function saveBusinessLocally() {
-    business.name = $("businessName").value.trim();
-    business.phone = $("businessPhone").value.trim();
-    business.email = $("businessEmail").value.trim();
-    business.description = $("businessDescription").value.trim();
+async function saveBusinessLocally() {
+  business.name = $("businessName").value.trim();
+  business.phone = $("businessPhone").value.trim();
+  business.email = $("businessEmail").value.trim();
+  business.description = $("businessDescription").value.trim();
 
-    const saved = writeStore("business", business);
-    updateBusinessPreview();
+  const saved = writeStore("business", business);
+  updateBusinessPreview();
 
-    if (saved) {
-      showToast("Información guardada en este navegador.");
-    }
+  if (!saved) {
+    return;
   }
+
+  const supabaseUrl = "https://jstcvnprvpcizjqdpzes.supabase.co";
+  const supabaseKey = "sb_publishable_RhkydSq-oeSxpNJ5LRVZQg_yiQvdBKc";
+
+  try {
+    const rawUser = localStorage.getItem("curioreservas_user");
+    const token = sessionStorage.getItem("curioreservas_access_token");
+
+    if (!rawUser || !token) {
+      showToast("Inicia sesión nuevamente para guardar los cambios.");
+      return;
+    }
+
+    const user = JSON.parse(rawUser);
+
+    if (!user.id) {
+      showToast("No encontramos tu usuario. Inicia sesión nuevamente.");
+      return;
+    }
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/businesses?owner_id=eq.${encodeURIComponent(user.id)}`,
+      {
+        method: "PATCH",
+        headers: {
+          "apikey": supabaseKey,
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({
+          Name: business.name,
+          Phone: business.phone,
+          email: business.email,
+          Description: business.description
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error("Error de Supabase:", error);
+      showToast("No se pudo guardar en Supabase. Revisa la consola.");
+      return;
+    }
+
+    const result = await response.json();
+
+    if (!result.length) {
+      showToast("No encontramos tu negocio en Supabase.");
+      return;
+    }
+
+    showToast("¡Información guardada en Supabase!");
+  } catch (error) {
+    console.error("Error al guardar:", error);
+    showToast("No se pudo conectar con Supabase.");
+  }
+}
+
 
   $("businessForm").addEventListener("submit", (event) => {
     event.preventDefault();
