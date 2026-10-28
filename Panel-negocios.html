@@ -1618,6 +1618,76 @@ async function deleteService(id) {
     }
   }
 
+  // CONECTAR LOS BOTONES DE LA PÁGINA PÚBLICA
+  const publicLinkInput = $("publicBookingLink");
+  const openPublicButton = $("openBookingPage");
+  const copyPublicButton = $("copyBookingLink");
+  const sharePublicButton = $("shareBookingLink");
+  const publicHint = $("publicBookingHint");
+
+  function getPublicBookingUrl() {
+    return new URL("reserva-cliente.html", window.location.href).href;
+  }
+
+  function updatePublicBookingLink() {
+    if (publicLinkInput) {
+      publicLinkInput.value = getPublicBookingUrl();
+    }
+  }
+
+  if (openPublicButton) {
+    openPublicButton.addEventListener("click", () => {
+      window.open(getPublicBookingUrl(), "_blank");
+    });
+  }
+
+  if (copyPublicButton) {
+    copyPublicButton.addEventListener("click", async () => {
+      updatePublicBookingLink();
+
+      try {
+        await navigator.clipboard.writeText(publicLinkInput.value);
+        showToast("¡Enlace copiado! 💜");
+        if (publicHint) {
+          publicHint.textContent = "¡Enlace copiado! Ya puedes enviarlo a tus clientes.";
+        }
+      } catch (error) {
+        publicLinkInput.focus();
+        publicLinkInput.select();
+        showToast("Selecciona el enlace y cópialo manualmente.");
+      }
+    });
+  }
+
+  if (sharePublicButton) {
+    sharePublicButton.addEventListener("click", async () => {
+      const url = getPublicBookingUrl();
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Reserva tu cita",
+            text: "Reserva fácilmente a través de CurioReservas",
+            url: url
+          });
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            showToast("No se pudo compartir el enlace.");
+          }
+        }
+      } else {
+        try {
+          await navigator.clipboard.writeText(url);
+          showToast("Enlace copiado. ¡Ya puedes compartirlo! 💜");
+        } catch (error) {
+          showToast("Pulsa «Copiar enlace» para compartirlo.");
+        }
+      }
+    });
+  }
+
+  updatePublicBookingLink();
+  
   loadLocalData();
   loadExistingBusiness();
 })();
