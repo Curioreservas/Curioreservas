@@ -803,22 +803,75 @@
         </div>
       </section>
 
-      <!-- PAGINA PUBLICA -->
-      <section class="page" id="page-pagina">
-        <div class="heading">
-          <div>
-            <h1>Mi página de reservas</h1>
-            <p class="subtitle">Aquí estará la página que tus clientes utilizarán para reservar.</p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="empty">
-            <div style="font-size:30px;margin-bottom:12px">↗</div>
-            <strong>Tu página pública se conectará en la siguiente fase</strong><br>
-            Mostrará el logo, la portada, la información, los servicios y los horarios disponibles de tu negocio.
-          </div>
-        </div>
-      </section>
+     
+<!-- PAGINA PUBLICA -->
+<section class="page" id="page-pagina">
+  <div class="heading">
+    <div>
+      <h1>Mi página de reservas</h1>
+      <p class="subtitle">
+        Comparte tu página para que tus clientes puedan descubrir tus servicios y reservar.
+      </p>
+    </div>
+  </div>
+
+  <div class="card section-card">
+    <div class="section-head">
+      <div>
+        <h3>Tu enlace de reservas</h3>
+        <p>Este será el enlace que podrás poner en tu Instagram, TikTok o WhatsApp.</p>
+      </div>
+      <span class="metric-icon">↗</span>
+    </div>
+
+    <div class="field">
+      <label for="publicBookingLink">Enlace público de tu negocio</label>
+      <input
+        id="publicBookingLink"
+        type="text"
+        readonly
+        value=""
+        placeholder="Tu enlace aparecerá aquí"
+      >
+      <span class="hint" id="publicBookingHint">
+        Primero necesitamos identificar tu negocio y conectar su página pública.
+      </span>
+    </div>
+
+    <div class="form-actions" style="justify-content:flex-start;flex-wrap:wrap">
+      <button class="btn btn-primary" id="openBookingPage" type="button">
+        ↗ Ver mi página
+      </button>
+      <button class="btn" id="copyBookingLink" type="button">
+        ▢ Copiar enlace
+      </button>
+      <button class="btn" id="shareBookingLink" type="button">
+        Compartir
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <div>
+        <h3>Tu página pública</h3>
+        <p>Así podrán acceder tus clientes cuando compartas el enlace.</p>
+      </div>
+    </div>
+
+    <div class="empty">
+      <div style="font-size:30px;margin-bottom:12px">✦</div>
+      <strong>Prepara tu escaparate digital</strong><br>
+      Aquí mostraremos el nombre de tu negocio, el logo, la portada,
+      tus servicios, los precios y los horarios disponibles.
+      <br><br>
+      <span class="hint">
+        La conexión con las reservas reales se completará en la siguiente fase.
+      </span>
+    </div>
+  </div>
+</section>
+
 
       <p class="hint" style="text-align:center;margin-top:25px">
         CurioReservas · Organiza tu negocio, simplifica tus reservas.
