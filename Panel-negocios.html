@@ -1626,8 +1626,10 @@ async function deleteService(id) {
   const publicHint = $("publicBookingHint");
 
   function getPublicBookingUrl() {
-    return new URL("reserva-cliente.html", window.location.href).href;
-  }
+  const url = new URL("reserva-cliente.html", window.location.href);
+  url.searchParams.set("id", "3");
+  return url.href;
+}
 
   function updatePublicBookingLink() {
     if (publicLinkInput) {
